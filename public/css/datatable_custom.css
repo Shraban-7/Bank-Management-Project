@@ -1,0 +1,19 @@
+input[type="search"] {
+    padding: 10px !important;
+}
+
+
+#Table_ID_filter > label {
+    display: flex !important;
+}
+/* #Table_ID_filter{
+        display: flex !important;
+        justify-items: end !important;
+    } */
+
+.paginate_button.page-item.active {
+    /* margin: 0 !important; */
+    /* padding: 0 !important; */
+    background: #fff !important;
+    border: none !important;
+}
