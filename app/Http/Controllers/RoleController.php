@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use RealRashid\SweetAlert\Facades\Alert;
+
 
 class RoleController extends Controller
 {
@@ -21,9 +23,9 @@ class RoleController extends Controller
     public function create()
     {
         $permission=Permission::all();
-        $roles = Role::with('permissions')->get();
+        $roles = Role::with('permissions')->paginate(10);
         // return $roles;
-        return view('admin.roles.create', compact('roles','permission'));
+        return view('layouts.role_list', compact('roles','permission'));
     }
 
     /**
@@ -33,16 +35,16 @@ class RoleController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|unique:roles,name',
-            'permission' => 'required',
+
         ]);
 
         $role = Role::create([
             'name' => $request->name,
             'guard_name' => 'web'
         ]);
-        $role->syncPermissions($request->input('permission'));
+        // $role->syncPermissions($request->input('permission'));
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Role created successfully.');
     }
 
     /**
@@ -66,7 +68,7 @@ class RoleController extends Controller
 
         // }
 
-        return view('admin.roles.edit', compact('role','permission'));
+        return view('layouts.role_edit', compact('role','permission'));
     }
 
     /**
@@ -75,17 +77,16 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $this->validate($request, [
-            'name' => 'required',
-            'permission' => 'nullable',
+
         ]);
 
         $role->update([
             'name' => $request->name,
             'guard_name' => 'web'
         ]);
-        $role->syncPermissions($request->input('permission'));
+        // $role->syncPermissions($request->input('permission'));
 
-        return redirect()->route('role.create');
+        return redirect()->route('role.create')->with('success', 'Role update successfully.');
     }
 
     /**

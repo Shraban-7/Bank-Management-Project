@@ -3,22 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Docs;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
+
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        $documents_query = Docs::where('user_id', Auth::user()->id);
+
+        if (request()->file_title) {
+            $documents_query->where('docs_title', 'LIKE', '%' . request()->file_title . '%');
+        }
+
+        $documents=$documents_query->paginate(5);
+        $user = $request->user();
+        return view('layouts.profile', compact('user', 'documents'));
     }
 
     /**

@@ -31,11 +31,9 @@ class AuthenticatedSessionController extends Controller
 
         $url = '';
         if($request->user()->hasRole('admin')){
-            $url = route('admin.dashboard');
-        }elseif($request->user()->role==='agent'){
-            $url = route('agent.dashboard');
-        }else{
             $url = route('dashboard');
+        }else{
+            $url = route('profile');
         }
 
         return redirect()->intended($url);

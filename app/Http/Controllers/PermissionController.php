@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class PermissionController extends Controller
@@ -13,8 +14,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions=Permission::all();
-        return view('admin.permissions.create',compact('permissions'));
+        $permissions=Permission::paginate(5);
+        return view('layouts.permissions',compact('permissions'));
     }
 
     /**
@@ -58,7 +59,7 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
-        return view('admin.permissions.edit',compact('permission'));
+        return view('layouts.permission_edit',compact('permission'));
     }
 
     /**

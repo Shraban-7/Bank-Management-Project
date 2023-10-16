@@ -24,7 +24,8 @@ class User extends Authenticatable
         'ph_no',
         'password',
         'address',
-        'dept_id'
+        'dept_id',
+        'roles'
     ];
 
     /**

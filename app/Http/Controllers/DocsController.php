@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Docs;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DocsController extends Controller
 {
@@ -14,9 +17,22 @@ class DocsController extends Controller
      */
     public function index()
     {
-        $documents = Docs::with('user.dept')->get();
+        $categories = Category::all();
+        $documents_query = Docs::with('user.dept', 'category');
+        if (request()->file_title) {
+            $documents_query->where('docs_title', 'LIKE', '%' . request()->file_title . '%');
+        }
+        if (request()->file_uploader) {
+            $documents_query->where('user_id', request()->file_uploader);
+        }
+        if (request()->category_id) {
+            $documents_query->where('category_id', request()->category_id);
+        }
+        $documents = $documents_query->paginate(50);
+
+        $users = User::all();
         // return $documents;
-        return view('admin.documents.list', compact('documents'));
+        return view('layouts.admin_document_list', compact('documents', 'categories', 'users'));
     }
 
     /**
@@ -30,17 +46,36 @@ class DocsController extends Controller
 
     public function list_documents()
     {
-        $documents = Docs::withWhereHas('user.dept', function ($query) {
+        $categories = Category::all();
+        $documents_query = Docs::withWhereHas('user.dept', function ($query) {
             $query->where('id', Auth::user()->dept_id);
-        })->get();
+        });
+        if (request()->file_title) {
+            $documents_query->where('docs_title', 'LIKE', '%' . request()->file_title . '%');
+        }
+        if (request()->category_id) {
+            $documents_query->where('category_id', request()->category_id);
+        }
+
+        $documents = $documents_query->paginate(50);
         // return $documents;
-        return view('document_list', compact('documents'));
+        return view('layouts.document_list', compact('documents','categories'));
+
+    }
+    public function my_documents()
+    {
+        $documents = Docs::where('user_id', Auth::user()->id)->paginate(50);
+
+        // return $documents;
+        return view('layouts.document_list', compact('documents'));
 
     }
 
     public function createByUser()
     {
-        return view('user_file_upload');
+
+        $categories = Category::all();
+        return view('layouts.user_file_upload', compact('categories'));
     }
 
     /**
@@ -57,12 +92,10 @@ class DocsController extends Controller
 
         // return Auth::user()->id;
 
-
         // return $request->all();
 
-
         // Handle file upload
-        $fileName="";
+        $fileName = "";
         if ($request->hasFile('docs_file')) {
             $file = $request->file('docs_file');
             $fileName = time() . '_' . $file->getClientOriginalName();
@@ -75,15 +108,15 @@ class DocsController extends Controller
         // Create a new document record
         Docs::create([
             'docs_title' => $request->input('docs_title'),
-            'user_id'=>Auth::user()->id,
+            'user_id' => Auth::user()->id,
+            'category_id' => $request->category_id,
             'docs_desc' => $request->input('docs_desc'),
             'docs_file' => $fileName, // Store the file name in the database
         ]);
-        if(Auth::user()->getRoleNames()->first()==='super-admin'||Auth::user()->getRoleNames()->first()==='admin')
-        {
+        if (Auth::user()->getRoleNames()->first() === 'super-admin' || Auth::user()->getRoleNames()->first() === 'admin') {
             return redirect()->route('docs.list')->with('success', 'Document created successfully.');
-        }else{
-            return redirect()->route('dashboard');
+        } else {
+            return redirect()->route('profile')->with('success', 'Document created successfully.');
         }
     }
 
@@ -92,7 +125,7 @@ class DocsController extends Controller
      */
     public function show(Docs $document)
     {
-        //
+        return view('layouts.document_details', compact('document'));
     }
 
     /**
@@ -100,7 +133,7 @@ class DocsController extends Controller
      */
     public function edit(Docs $document)
     {
-        return view('admin.documents.edit', compact('document'));
+        return view('layouts.document_edit', compact('document'));
     }
 
     /**
@@ -116,7 +149,7 @@ class DocsController extends Controller
         ]);
 
         // Handle file upload if a new file is provided
-        $fileName="";
+        $fileName = "";
         if ($request->hasFile('docs_file')) {
             $file = $request->file('docs_file');
             $fileName = time() . '_' . $file->getClientOriginalName();
@@ -125,14 +158,12 @@ class DocsController extends Controller
 
             // Delete the old file if it exists
 
-
-
             if ($document->docs_file) {
                 Storage::delete('public/upload/' . $document->docs_file);
             }
             // Update the file name in the database
 
-        }else {
+        } else {
             // No new file provided, retain the previous file
             $fileName = $document->docs_file;
         }
@@ -146,7 +177,6 @@ class DocsController extends Controller
 
         return redirect()->back()->with('success', 'Document updated successfully.');
     }
-
 
     public function download(Docs $document)
     {
@@ -170,7 +200,11 @@ class DocsController extends Controller
         }
 
         $document->delete();
+        if (Auth::user()->getRoleNames()->first() === 'super-admin' || Auth::user()->getRoleNames()->first() === 'admin') {
+            return redirect()->route('docs.list')->with('success', 'Document deleted successfully.');
+        } else {
+            return redirect()->route('profile');
+        }
 
-        return redirect()->route('docs.list')->with('success', 'Document deleted successfully.');
     }
 }

@@ -1,10 +1,15 @@
 input[type="search"] {
     padding: 10px !important;
+    border: 1px solid black;
+    margin:0 10px;
 }
 
 
 #Table_ID_filter > label {
     display: flex !important;
+    font-size: x-large;
+    align-items: center;
+    padding: 15px;
 }
 /* #Table_ID_filter{
         display: flex !important;
@@ -16,4 +21,14 @@ input[type="search"] {
     /* padding: 0 !important; */
     background: #fff !important;
     border: none !important;
+}
+
+.dataTables_length>label{
+    font-size: 18px;
+    margin: 0 20px;
+    padding: 20px;
+}
+
+select{
+    border: 1px solid black;
 }

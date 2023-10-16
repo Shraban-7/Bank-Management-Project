@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dept;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DeptController extends Controller
 {
@@ -12,8 +13,14 @@ class DeptController extends Controller
      */
     public function index()
     {
-        $departments = Dept::all();
-        return view('admin.dept.list',compact('departments'));
+        $departments_query =  Dept::query();
+
+        if (request()->department_name) {
+            $departments_query->where('dept_name', 'LIKE','%'.request()->department_name.'%');
+        }
+
+        $departments=$departments_query->paginate(10);
+        return view('layouts.department_list',compact('departments'));
     }
 
     /**
@@ -21,7 +28,7 @@ class DeptController extends Controller
      */
     public function create()
     {
-        return view('admin.dept.create');
+        return view('layouts.department_create');
     }
 
     /**
@@ -42,39 +49,39 @@ class DeptController extends Controller
      */
     public function show(Dept $dept)
     {
-        return view('admin.dept.edit',compact('dept'));
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Dept $dept)
+    public function edit(Dept $department)
     {
-        return view('admin.dept.edit',compact('dept'));
+        return view('layouts.department_edit',compact('department'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Dept $dept)
+    public function update(Request $request, Dept $department)
     {
         $request->validate([
             'dept_name'=>'required'
         ]);
 
-        $dept->update([
+        $department->update([
             'dept_name'=>$request->dept_name,
         ]);
 
-        return redirect()->back()->with('success','department create successfully');
+        return redirect()->route('department.list')->with('success','department update successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Dept $dept)
+    public function destroy(Dept $department)
     {
-        $dept->delete();
+        $department->delete();
         return redirect()->route('department.list');
     }
 }
