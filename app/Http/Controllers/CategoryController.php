@@ -29,14 +29,14 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categories_query=Category::get();
+        $categories_query=Category::query();
 
         if (request()->category_name) {
-            $categories_query->where('category_name	', 'LIKE','%'.request()->category_name.'%');
+            $categories_query->where('category_name', 'LIKE','%'.request()->category_name.'%');
         }
 
         $categories=$categories_query->paginate(2);
-        return view('layouts.add_category',compact('categories'));
+        return view('layouts.category_create',compact('categories'));
     }
 
     /**
