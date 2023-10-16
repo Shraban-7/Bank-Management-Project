@@ -30,12 +30,12 @@ class DocsController extends Controller
             $documents_query->where('category_id', request()->category_id);
         }
 
-        if (request()->dept_id) {
-            // return request()->dept_id;
-            $documents_query->whereHas('user', function ($query) {
-                $query->where('dept_id', request()->dept_id );
-            });
-        }
+        // if (request()->dept_id) {
+        //     // return request()->dept_id;
+        //     $documents_query->whereHas('user', function ($query) {
+        //         $query->where('dept_id', request()->dept_id );
+        //     });
+        // }
         $documents = $documents_query->paginate(50);
 
         $users = User::all();

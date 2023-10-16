@@ -8,8 +8,8 @@
                 <form action="{{ route('user.docs.list') }}" method="get" class="grid grid-cols-4 gap-3"
                     enctype="multipart/form-data">
                     <div class="">
-                        <input type="text" id="name" value="{{ request()->department_name }}"
-                            placeholder="Search by Department Name" name="department_name"
+                        <input type="text" id="name" value="{{ request()->file_title }}"
+                            placeholder="Search by Document Name" name="file_title"
                             class="w-full px-4 py-3  border-stroke bg-transparent  font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter rounded border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                     </div>
 
@@ -19,7 +19,9 @@
                                 name="file_uploader" class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-blue-500 focus:ring focus:ring-blue-200 ">
                                 <option selected value="">Select File Uploader</option>
                                 @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    <option @if (request()->file_uploader==$user->id)
+                                        selected
+                                    @endif value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>
                             <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2">
@@ -38,7 +40,9 @@
                                 name="category_id" class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-blue-500 focus:ring focus:ring-blue-200 ">
                                 <option selected value="">Select File Category</option>
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                                    <option @if (request()->category_id==$category->id)
+                                        selected
+                                    @endif value="{{ $category->id }}">{{ $category->category_name }}</option>
                                 @endforeach
                             </select>
                             <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2">

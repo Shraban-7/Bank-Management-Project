@@ -1,7 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="py-12 ">
+<div class="pt-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+        <div class="bg-white overflow-hidden shadow-default ">
+            <div class="p-6 text-gray-900">
+                <form action="{{ route('user.list') }}" method="get" class="grid grid-cols-2 gap-3"
+                    enctype="multipart/form-data">
+                    <div class="">
+                        <input type="text" id="name" value="{{ request()->user_name }}"
+                            placeholder="Search by Username" name="user_name"
+                            class="w-full px-4 py-3  border-stroke bg-transparent  font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter rounded border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    </div>
+                    <div>
+                        <button type="submit"
+                            class="flex w-full justify-center rounded bg-primary px-4 py-3  font-medium text-gray">
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="pb-12 ">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
             <div
                 class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
