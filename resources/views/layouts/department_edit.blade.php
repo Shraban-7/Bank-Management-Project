@@ -16,14 +16,14 @@
                             </ul>
                         </div>
                     @endif
-                    <h2 class="text-2xl font-semibold mb-4">Update Category</h2>
-                    <form action="{{ route('category.update',$category->id) }}" method="POST" enctype="multipart/form-data">
+                    <h2 class="text-2xl font-semibold mb-4">Update Department</h2>
+                    <form action="{{ route('department.update',$department->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-4">
                             <label for="name"
-                                class="mb-3 text-gray-700 block font-medium  text-black dark:text-white">Category
+                                class="mb-3 text-gray-700 block font-medium  text-black dark:text-white">Department
                                 Name</label>
-                            <input type="text" id="name" value="{{ $category->category_name }}" name="category_name"
+                            <input type="text" id="name" value="{{ $department->dept_name }}" name="dept_name"
                                 class="w-full px-4 py-2  border-stroke bg-transparent  font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter rounded border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                >
                         </div>

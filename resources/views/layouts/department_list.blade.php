@@ -1,7 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="py-12 ">
+    <div class="pt-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+            <div class="bg-white overflow-hidden shadow-default ">
+                <div class="p-6 text-gray-900">
+                    <form action="{{ route('department.list') }}" method="get" class="grid grid-cols-2 gap-3"
+                        enctype="multipart/form-data">
+                        <div class="">
+                            <input type="text" id="name" value="{{ request()->department_name }}"
+                                placeholder="Search by Department Name" name="department_name"
+                                class="w-full px-4 py-2  border-stroke bg-transparent  font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter rounded border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                        </div>
+                        <div>
+                            <button type="submit"
+                                class="flex w-full justify-center rounded bg-primary px-4 py-2  font-medium text-gray">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pb-12 ">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
             <div
                 class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -38,8 +60,21 @@
 
 
                                     <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-
-                                            <a href="{{ route('department.delete', $department->id) }}" class="hover:text-primary">
+                                        <div class="flex items-center space-x-3.5">
+                                            <a href="{{ route('department.edit', $department->id) }}"
+                                                class="hover:text-primary">
+                                                <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18"
+                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z"
+                                                        fill="" />
+                                                    <path
+                                                        d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z"
+                                                        fill="" />
+                                                </svg>
+                                            </a>
+                                            <a href="{{ route('department.delete', $department->id) }}"
+                                                class="hover:text-primary">
                                                 <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18"
                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -56,23 +91,23 @@
                                                         fill="" />
                                                 </svg>
                                             </a>
-
                                         </div>
-                                    </td>
-                                </tr>
-
-                                @php
-                                    $count++; // Increment the count variable for each iteration
-                                @endphp
-                            @endforeach
-
-                        </tbody>
-                    </table>
                 </div>
-                <div class="pagination mt-5 p-4">
-                    {{ $departments->links() }}
-                </div>
+                </td>
+                </tr>
+
+                @php
+                    $count++; // Increment the count variable for each iteration
+                @endphp
+                @endforeach
+
+                </tbody>
+                </table>
+            </div>
+            <div class="pagination mt-5 p-4">
+                {{ $departments->links() }}
             </div>
         </div>
+    </div>
     </div>
 @endsection
