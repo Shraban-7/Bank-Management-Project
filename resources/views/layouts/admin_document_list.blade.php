@@ -5,7 +5,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
         <div class="bg-white overflow-hidden shadow-default ">
             <div class="p-6 text-gray-900">
-                <form action="{{ route('docs.list') }}" method="get" class="grid grid-cols-4 gap-3"
+                <form action="{{ route('docs.list') }}" method="get" class="grid grid-cols-3 gap-3"
                     enctype="multipart/form-data">
                     <div class="">
                         <input type="text" id="name" value="{{ request()->file_title }}"
@@ -35,12 +35,14 @@
                                 </svg>
                             </span>
                         </div>
-                        {{-- <div class="relative z-20 bg-transparent dark:bg-form-input">
+                        <div class="relative z-20 bg-transparent dark:bg-form-input">
                             <select
                                 name="dept_id" class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-blue-500 focus:ring focus:ring-blue-200 ">
                                 <option selected value="">Select Department</option>
                                 @foreach ($departments as $department)
-                                    <option value="{{ $department->id }}">{{ $department->dept_name }}</option>
+                                    <option @if (request()->dept_id==$department->id)
+                                        selected
+                                    @endif value="{{ $department->id }}">{{ $department->dept_name }}</option>
                                 @endforeach
                             </select>
                             <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2">
@@ -53,8 +55,8 @@
                                     </g>
                                 </svg>
                             </span>
-                        </div> --}}
-                        <div class="relative z-20 bg-transparent  dark:bg-form-input">
+                        </div>
+                        <div class="relative z-20 bg-transparent col-span-2 dark:bg-form-input">
                             <select
                                 name="category_id" class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-blue-500 focus:ring focus:ring-blue-200 ">
                                 <option selected value="">Select File Category</option>

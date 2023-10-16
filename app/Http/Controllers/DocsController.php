@@ -30,12 +30,14 @@ class DocsController extends Controller
             $documents_query->where('category_id', request()->category_id);
         }
 
-        // if (request()->dept_id) {
-        //     // return request()->dept_id;
-        //     $documents_query->whereHas('user', function ($query) {
-        //         $query->where('dept_id', request()->dept_id );
-        //     });
-        // }
+        if (request()->dept_id) {
+            // return request()->dept_id;
+            $documents_query->whereHas('user', function ($query) {
+                $query->whereHas('dept', function($query) {
+                    $query->where('id', request()->dept_id);
+                });
+            });
+        }
         $documents = $documents_query->paginate(50);
 
         $users = User::all();
@@ -100,7 +102,7 @@ class DocsController extends Controller
         $request->validate([
             'docs_title' => 'required',
             'docs_desc' => 'required',
-            'docs_file' => 'required|file|mimes:pdf,doc,docx|max:2048', // Adjust file validation rules as needed
+            'docs_file' => 'required', // Adjust file validation rules as needed
         ]);
 
         // return Auth::user()->id;
