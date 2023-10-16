@@ -27,23 +27,7 @@
                                 required>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="mb-3 block font-medium text-sm text-black dark:text-white">
-                                Select Roles
-                            </label>
-
-                            <table>
-                                <tr >
-                                @foreach ($permission as $per)
-                                        <td >
-                                            <input type="checkbox"  value="{{ $per->id }}" name="permission[]"
-                                                id="">
-                                            <label class="mr-3" for="">{{ $per->name }}</label>
-                                        </td>
-                                        @endforeach
-                                    </tr>
-                            </table>
-                        </div>
+                       
                         <div>
                             <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
                                 Submit

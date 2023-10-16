@@ -19,32 +19,14 @@
                     @csrf
                     <div class="mb-4">
                         <label for="name"
-                            class="mb-3 text-gray-700 block font-medium  text-black dark:text-white">Document
-                            Title</label>
+                            class="mb-3 text-gray-700 block font-medium  text-black dark:text-white">Role
+                            Name</label>
                         <input type="text" id="name" value="{{ $role->name }}" name="name"
                             class="w-full px-4 py-2  border-stroke bg-transparent  font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter rounded border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                             required>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="mb-3 block font-medium text-sm text-black dark:text-white">
-                            Select Roles
-                        </label>
 
-                        <table>
-                            <tr >
-                            @foreach ($permission as $per)
-                                    <td >
-                                        <input type="checkbox" @if(in_array($per->id,$role->permissions->pluck('id')->toArray()))
-                                        checked
-                                        @endif  value="{{ $per->id }}" name="permission[]"
-                                            id="">
-                                        <label class="mr-3" for="">{{ $per->name }}</label>
-                                    </td>
-                                    @endforeach
-                                </tr>
-                        </table>
-                    </div>
                     <div>
                         <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
                             Submit

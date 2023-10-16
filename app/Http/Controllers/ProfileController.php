@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Docs;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Category;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -20,14 +21,19 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         $documents_query = Docs::where('user_id', Auth::user()->id);
+        $categories = Category::all();
 
         if (request()->file_title) {
             $documents_query->where('docs_title', 'LIKE', '%' . request()->file_title . '%');
         }
 
+        if (request()->category_id) {
+            $documents_query->where('category_id', request()->category_id);
+        }
+
         $documents=$documents_query->paginate(5);
         $user = $request->user();
-        return view('layouts.profile', compact('user', 'documents'));
+        return view('layouts.profile', compact('user', 'documents','categories'));
     }
 
     /**

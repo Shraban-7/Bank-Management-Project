@@ -12,17 +12,17 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $categories_query=Category::all();
+    // public function index()
+    // {
+    //     $categories_query=Category::all();
 
-        if (request()->category_name) {
-            $categories_query->where('category_name	', 'LIKE','%'.request()->category_name.'%');
-        }
+    //     if (request()->category_name) {
+    //         $categories_query->where('category_name	', 'LIKE','%'.request()->category_name.'%');
+    //     }
 
-        $categories=$categories_query->paginate(2);
-        return view('layouts.category_list',compact('categories'));
-    }
+    //     $categories=$categories_query->paginate(10);
+    //     return view('layouts.category_list',compact('categories'));
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -35,7 +35,7 @@ class CategoryController extends Controller
             $categories_query->where('category_name', 'LIKE','%'.request()->category_name.'%');
         }
 
-        $categories=$categories_query->paginate(2);
+        $categories=$categories_query->paginate(10);
         return view('layouts.category_create',compact('categories'));
     }
 
@@ -52,7 +52,7 @@ class CategoryController extends Controller
             'category_name'=>$request->category_name
         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success','category create successfully');
     }
 
     /**
@@ -84,7 +84,7 @@ class CategoryController extends Controller
             'category_name'=>$request->category_name
         ]);
 
-        return redirect()->route('category.create');
+        return redirect()->route('category.create')->with('success','category update successfully');
     }
 
     /**

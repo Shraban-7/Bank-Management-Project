@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Dept;
 use App\Models\Docs;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class DocsController extends Controller
 {
@@ -19,6 +19,7 @@ class DocsController extends Controller
     {
         $categories = Category::all();
         $documents_query = Docs::with('user.dept', 'category');
+        // return $documents_query->get();
         if (request()->file_title) {
             $documents_query->where('docs_title', 'LIKE', '%' . request()->file_title . '%');
         }
@@ -28,11 +29,19 @@ class DocsController extends Controller
         if (request()->category_id) {
             $documents_query->where('category_id', request()->category_id);
         }
+
+        if (request()->dept_id) {
+            // return request()->dept_id;
+            $documents_query->whereHas('user', function ($query) {
+                $query->where('dept_id', request()->dept_id );
+            });
+        }
         $documents = $documents_query->paginate(50);
 
         $users = User::all();
+        $departments = Dept::all();
         // return $documents;
-        return view('layouts.admin_document_list', compact('documents', 'categories', 'users'));
+        return view('layouts.admin_document_list', compact('documents', 'categories', 'users', 'departments'));
     }
 
     /**
@@ -53,13 +62,17 @@ class DocsController extends Controller
         if (request()->file_title) {
             $documents_query->where('docs_title', 'LIKE', '%' . request()->file_title . '%');
         }
+        if (request()->file_uploader) {
+            $documents_query->where('user_id', request()->file_uploader);
+        }
         if (request()->category_id) {
             $documents_query->where('category_id', request()->category_id);
         }
 
         $documents = $documents_query->paginate(50);
+        $users = User::all();
         // return $documents;
-        return view('layouts.document_list', compact('documents','categories'));
+        return view('layouts.document_list', compact('documents', 'categories', 'users'));
 
     }
     public function my_documents()
@@ -133,7 +146,10 @@ class DocsController extends Controller
      */
     public function edit(Docs $document)
     {
-        return view('layouts.document_edit', compact('document'));
+        $categories = Category::all();
+        $document_category = $document->category->id;
+        // return $document_category;
+        return view('layouts.document_edit', compact('document', 'document_category', 'categories'));
     }
 
     /**
@@ -145,29 +161,34 @@ class DocsController extends Controller
         $request->validate([
             'docs_title' => 'required',
             'docs_desc' => 'required',
-            'docs_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // Adjust file validation rules as needed
+            // 'docs_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // Adjust file validation rules as needed
         ]);
 
-        // Handle file upload if a new file is provided
-        $fileName = "";
+        $fileName = ""; // Initialize fileName variable
+
         if ($request->hasFile('docs_file')) {
             $file = $request->file('docs_file');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            // Store the file in the storage/app/public directory
+
             $file->storeAs('public/upload', $fileName);
 
-            // Delete the old file if it exists
+            // Check if $document is the existing document to be updated
+            if ($document) {
+                // Delete the old file if it exists
+                if ($document->docs_file) {
+                    Storage::delete('public/upload/' . $document->docs_file);
+                }
 
-            if ($document->docs_file) {
-                Storage::delete('public/upload/' . $document->docs_file);
+                // Update the document's file name in the database
+                $document->update(['docs_file' => $fileName]);
             }
-            // Update the file name in the database
-
         } else {
-            // No new file provided, retain the previous file
-            $fileName = $document->docs_file;
+            $fileName = $document->docs_file; // Use the existing file name
         }
 
+// Rest of your code to save or update the document in the database
+
+        // return $request->all();
         // Update the document
         $document->update([
             'docs_title' => $request->input('docs_title'),
